@@ -11,6 +11,10 @@ import Vision
 
 class ViewController: UIViewController {
     
+    var imageNames:[String] = ["cat2","cat3","cat4",
+        "dog2","dog3","dog4","eagle1","eagle3","eagle4",
+        "tiger3","whale2","whale3"]
+    var imageTypes:[String] = ["jpeg","jpeg","jpeg","jpeg","jpeg","jpeg","jpg","jpeg","jpeg","jpeg","jpeg","jpeg"]
     
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var labelDescription: UILabel!
