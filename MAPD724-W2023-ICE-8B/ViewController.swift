@@ -16,17 +16,27 @@ class ViewController: UIViewController {
         "tiger3","whale2","whale3"]
     var imageTypes:[String] = ["jpeg","jpeg","jpeg","jpeg","jpeg","jpeg","jpg","jpeg","jpeg","jpeg","jpeg","jpeg"]
     
+    var modelFileNet = MobileNetV2()
+    var modelFileSq = SqueezeNet()
+    
+    var index: Int = 0
+    var actualImageName: String = ""
+    var actualImageType: String = ""
+    
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var labelDescription: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        index = 0
+        actualImageName = imageNames[index]
+        actualImageType = imageTypes[index]
+        imageView.image = UIImage(named: actualImageName+"."+actualImageType)
         
-        let imagePath = Bundle.main.path(forResource: "eagle1", ofType: "jpg")
+        let imagePath = Bundle.main.path(forResource: actualImageName, ofType: actualImageType)
         let imageURL = NSURL.fileURL(withPath: imagePath!)
         
-        let modelFile = MobileNetV2()
-        let model = try! VNCoreMLModel(for: modelFile.model)
+        let model = try! VNCoreMLModel(for: modelFileSq.model)
         
         let handler = VNImageRequestHandler(url: imageURL)
         let request = VNCoreMLRequest(model: model, completionHandler: findResults)
@@ -49,6 +59,25 @@ class ViewController: UIViewController {
        labelDescription.text = "Image is: \(bestGuess) with confidence \(bestConfidence) out of 1"
     }
 
-
+    @IBAction func nextImage_pressed(_ sender: UIButton) {
+        
+        index += 1
+        if (index >= imageNames.count){
+            index = 0
+        }
+        
+        actualImageName = imageNames[index]
+        actualImageType = imageTypes[index]
+        imageView.image = UIImage(named: actualImageName+"."+actualImageType)
+        let imagePath = Bundle.main.path(forResource: actualImageName, ofType: actualImageType)
+        let imageURL = NSURL.fileURL(withPath: imagePath!)
+        
+        let model = try! VNCoreMLModel(for: modelFileNet.model)
+        
+        let handler = VNImageRequestHandler(url: imageURL)
+        let request = VNCoreMLRequest(model: model, completionHandler: findResults)
+        try! handler.perform([request])
+    }
+    
 }
 
